@@ -1,0 +1,37 @@
+# Игнорируем виртуальное окружение
+venv/
+__pycache__/
+*.pyc
+
+# Игнорируем файлы и папки IDE (например, для VS Code)
+.vscode/
+
+# Игнорируем файлы конфигурации
+.env
+
+# Логи
+*.log
+
+
+migrations/versions/*.pyc
+
+*.db
+*.sqlite
+*.sqlite3
+
+
+instagram_cookies.txt
+data/
+
+.mypy_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+.cache/
+
+.DS_Store
+
+docker-compose.override.yml
+docker-compose.db.yml
+
+**/user.session
