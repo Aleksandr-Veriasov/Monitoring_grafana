@@ -1,17 +1,31 @@
-name: menu_bot_monitoring
+name: monitoring
 
+# Тома созданы старым проектом menu_bot_monitoring — подключаем по полным именам,
+# чтобы сохранить дашборды Grafana и историю Prometheus/Loki.
 volumes:
   prometheus_data:
+    external: true
+    name: menu_bot_monitoring_prometheus_data
   grafana_data:
+    external: true
+    name: menu_bot_monitoring_grafana_data
   loki_data:
+    external: true
+    name: menu_bot_monitoring_loki_data
   promtail_positions:
+    external: true
+    name: menu_bot_monitoring_promtail_positions
 
 networks:
-  app-net:
+  monitoring_net:
+    name: monitoring_net
+  # сеть smart_menu_bot — только для prometheus, чтобы собирать метрики сервисов бота
+  menu_bot_app_net:
     external: true
     name: menu_bot_app_net
   proxy_net:
     external: true
+    name: proxy_net
 
 services:
   prometheus:
@@ -27,7 +41,8 @@ services:
       - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - prometheus_data:/prometheus
     networks:
-      - app-net
+      - monitoring_net
+      - menu_bot_app_net
     restart: unless-stopped
 
   loki:
@@ -38,7 +53,7 @@ services:
       - ./monitoring/loki/loki.yml:/etc/loki/loki.yml:ro
       - loki_data:/loki
     networks:
-      - app-net
+      - monitoring_net
     restart: unless-stopped
 
   promtail:
@@ -50,13 +65,13 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - promtail_positions:/tmp
     networks:
-      - app-net
+      - monitoring_net
     depends_on:
       - loki
     restart: unless-stopped
 
   node_exporter:
-    image: prom/node-exporter:latest
+    image: prom/node-exporter:v1.10.2
     container_name: node_exporter
     command:
       - --path.rootfs=/host
@@ -64,11 +79,11 @@ services:
     volumes:
       - /:/host:ro,rslave
     networks:
-      - app-net
+      - monitoring_net
     restart: unless-stopped
 
   cadvisor:
-    image: gcr.io/cadvisor/cadvisor:latest
+    image: gcr.io/cadvisor/cadvisor:v0.55.1
     container_name: cadvisor
     privileged: true
     command:
@@ -82,7 +97,7 @@ services:
       - /sys:/sys:ro
       - /var/lib/docker/:/var/lib/docker:ro
     networks:
-      - app-net
+      - monitoring_net
     restart: unless-stopped
 
   grafana:
@@ -98,7 +113,7 @@ services:
       - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
       - grafana_data:/var/lib/grafana
     networks:
-      - app-net
+      - monitoring_net
       - proxy_net
     depends_on:
       - prometheus
