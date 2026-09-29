@@ -68,6 +68,8 @@ services:
   node_exporter:
     image: prom/node-exporter:v1.10.2
     container_name: node_exporter
+    # Иначе nodename = id контейнера и меняется при пересоздании (ломает переменные Node Exporter Full)
+    hostname: prod-host
     command:
       - --path.rootfs=/host
     pid: host
@@ -86,6 +88,8 @@ services:
       - --docker_only=true
       - --disable_metrics=percpu,sched,tcp,udp,disk,hugetlb,referenced_memory,cpu_topology,resctrl,process
       - --store_container_labels=false
+      # Только эти docker-лейблы — для группировки по проектам в Host Overview
+      - --whitelisted_container_labels=com.docker.compose.project,com.docker.compose.service
     volumes:
       - /:/rootfs:ro
       - /var/run:/var/run:ro
@@ -106,6 +110,7 @@ services:
       GF_SERVER_SERVE_FROM_SUB_PATH: "false"
     volumes:
       - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./monitoring/grafana/dashboards:/etc/grafana/dashboards:ro
       - grafana_data:/var/lib/grafana
     networks:
       - monitoring_net

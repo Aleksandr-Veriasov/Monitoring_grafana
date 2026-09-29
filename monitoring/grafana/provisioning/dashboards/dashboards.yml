@@ -1,0 +1,13 @@
+apiVersion: 1
+
+# Дашборды — код: источник правды monitoring/grafana/dashboards/*.json.
+# Правки в UI сохранить нельзя — экспортируйте JSON (Share → Export) и закоммитьте.
+providers:
+  - name: infra
+    type: file
+    folder: Infra
+    disableDeletion: true
+    allowUiUpdates: false
+    updateIntervalSeconds: 30
+    options:
+      path: /etc/grafana/dashboards
