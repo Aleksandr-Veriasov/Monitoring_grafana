@@ -19,10 +19,6 @@ volumes:
 networks:
   monitoring_net:
     name: monitoring_net
-  # сеть smart_menu_bot — только для prometheus, чтобы собирать метрики сервисов бота
-  menu_bot_app_net:
-    external: true
-    name: menu_bot_app_net
   proxy_net:
     external: true
     name: proxy_net
@@ -42,7 +38,6 @@ services:
       - prometheus_data:/prometheus
     networks:
       - monitoring_net
-      - menu_bot_app_net
     restart: unless-stopped
 
   loki:
