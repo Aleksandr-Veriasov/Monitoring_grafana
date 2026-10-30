@@ -22,3 +22,11 @@ scrape_configs:
         target_label: compose_service
     pipeline_stages:
       - docker: {}
+      # MoneyBox пишет продолжение записи (трассировку) строками с отступом:
+      # склеиваем их с первой строкой, чтобы ошибка была одной записью Loki.
+      - match:
+          selector: '{container=~"/?moneybox-(api|worker|migrate)-1"}'
+          stages:
+            - multiline:
+                firstline: '^\S'
+                max_wait_time: 3s
