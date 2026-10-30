@@ -11,7 +11,7 @@
           "disableResolveMessage": false,
           "settings": {
             "bottoken": "$TELEGRAM_BOT_TOKEN",
-            "chatid": "$BOT_ADMIN",
+            "chatid": "249108527",
             "message": "{{ template \"default.message\" . }}"
           }
         }
