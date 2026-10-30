@@ -19,7 +19,8 @@
     {
       "id": 1,
       "type": "stat",
-      "title": "API доступен",
+      "title": "API",
+      "description": "Prometheus достаёт moneybox:8000/metrics",
       "datasource": {
         "type": "prometheus",
         "uid": "PBFA97CFB590B2093"
@@ -27,39 +28,79 @@
       "gridPos": {
         "x": 0,
         "y": 0,
-        "w": 12,
-        "h": 7
+        "w": 6,
+        "h": 4
       },
       "targets": [
         {
           "refId": "A",
-          "expr": "max(up{job=\"moneybox\"})",
           "datasource": {
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
-          }
+          },
+          "expr": "max(up{job=\"moneybox\"})"
         }
       ],
       "fieldConfig": {
         "defaults": {
-          "unit": "short"
+          "unit": "none",
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "DOWN",
+                  "color": "red"
+                },
+                "1": {
+                  "text": "UP",
+                  "color": "green"
+                }
+              }
+            }
+          ],
+          "noValue": "нет данных"
         },
         "overrides": []
       },
       "options": {
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom"
-        },
-        "tooltip": {
-          "mode": "multi"
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "textMode": "value",
+        "wideLayout": true,
+        "showPercentChange": false,
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
         }
       }
     },
     {
       "id": 2,
       "type": "stat",
-      "title": "Worker доступен",
+      "title": "Worker",
+      "description": "Prometheus достаёт moneybox-worker:9100/metrics",
       "datasource": {
         "type": "prometheus",
         "uid": "PBFA97CFB590B2093"
@@ -67,39 +108,79 @@
       "gridPos": {
         "x": 6,
         "y": 0,
-        "w": 12,
-        "h": 7
+        "w": 6,
+        "h": 4
       },
       "targets": [
         {
           "refId": "A",
-          "expr": "max(up{job=\"moneybox_worker\"})",
           "datasource": {
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
-          }
+          },
+          "expr": "max(up{job=\"moneybox_worker\"})"
         }
       ],
       "fieldConfig": {
         "defaults": {
-          "unit": "short"
+          "unit": "none",
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "DOWN",
+                  "color": "red"
+                },
+                "1": {
+                  "text": "UP",
+                  "color": "green"
+                }
+              }
+            }
+          ],
+          "noValue": "нет данных"
         },
         "overrides": []
       },
       "options": {
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom"
-        },
-        "tooltip": {
-          "mode": "multi"
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "textMode": "value",
+        "wideLayout": true,
+        "showPercentChange": false,
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
         }
       }
     },
     {
       "id": 3,
-      "type": "timeseries",
-      "title": "HTTP запросы по статусам",
+      "type": "stat",
+      "title": "Доля 5xx за 1 ч",
+      "description": "",
       "datasource": {
         "type": "prometheus",
         "uid": "PBFA97CFB590B2093"
@@ -107,313 +188,513 @@
       "gridPos": {
         "x": 12,
         "y": 0,
-        "w": 12,
-        "h": 7
+        "w": 6,
+        "h": 4
       },
       "targets": [
         {
           "refId": "A",
-          "expr": "sum by (status) (rate(moneybox_http_requests_total{job=\"moneybox\",route!=\"/metrics\"}[5m]))",
           "datasource": {
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
-          }
+          },
+          "expr": "(sum(increase(moneybox_http_requests_total{job=\"moneybox\",status=~\"5..\"}[1h])) or vector(0)) / clamp_min(sum(increase(moneybox_http_requests_total{job=\"moneybox\",route!=\"/metrics\"}[1h])), 1)"
         }
       ],
       "fieldConfig": {
         "defaults": {
-          "unit": "short"
+          "unit": "percentunit",
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 0.01
+              },
+              {
+                "color": "red",
+                "value": 0.05
+              }
+            ]
+          },
+          "mappings": [],
+          "noValue": "нет данных"
         },
         "overrides": []
       },
       "options": {
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom"
-        },
-        "tooltip": {
-          "mode": "multi"
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "textMode": "value",
+        "wideLayout": true,
+        "showPercentChange": false,
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
         }
       }
     },
     {
       "id": 4,
-      "type": "timeseries",
-      "title": "Ошибки API по типам",
+      "type": "stat",
+      "title": "Курсы обновлены",
+      "description": "Сколько прошло с последнего успешного обновления курсов; норма — меньше суток",
       "datasource": {
         "type": "prometheus",
         "uid": "PBFA97CFB590B2093"
       },
       "gridPos": {
-        "x": 0,
-        "y": 8,
-        "w": 12,
-        "h": 7
+        "x": 18,
+        "y": 0,
+        "w": 6,
+        "h": 4
       },
       "targets": [
         {
           "refId": "A",
-          "expr": "sum by (module, type) (rate(moneybox_errors_total{job=\"moneybox\"}[5m]))",
           "datasource": {
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
-          }
+          },
+          "expr": "time() - max(moneybox_task_last_success_timestamp_seconds{job=\"moneybox_worker\",task=\"rates:refresh\"})"
         }
       ],
       "fieldConfig": {
         "defaults": {
-          "unit": "short"
+          "unit": "s",
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 93600
+              },
+              {
+                "color": "red",
+                "value": 180000
+              }
+            ]
+          },
+          "mappings": [],
+          "noValue": "нет данных"
         },
         "overrides": []
       },
       "options": {
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom"
-        },
-        "tooltip": {
-          "mode": "multi"
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "textMode": "value",
+        "wideLayout": true,
+        "showPercentChange": false,
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
         }
       }
     },
     {
       "id": 5,
       "type": "timeseries",
-      "title": "Доля ответов 5xx",
+      "title": "HTTP запросы по статусам",
+      "description": "",
       "datasource": {
         "type": "prometheus",
         "uid": "PBFA97CFB590B2093"
       },
       "gridPos": {
-        "x": 12,
-        "y": 8,
+        "x": 0,
+        "y": 4,
         "w": 12,
-        "h": 7
+        "h": 8
       },
       "targets": [
         {
           "refId": "A",
-          "expr": "sum(rate(moneybox_http_requests_total{job=\"moneybox\",status=~\"5..\"}[5m])) / clamp_min(sum(rate(moneybox_http_requests_total{job=\"moneybox\",route!=\"/metrics\"}[5m])), 0.1)",
           "datasource": {
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
-          }
+          },
+          "expr": "sum by (status) (rate(moneybox_http_requests_total{job=\"moneybox\",route!=\"/metrics\"}[5m]))",
+          "legendFormat": "{{status}}"
         }
       ],
       "fieldConfig": {
         "defaults": {
-          "unit": "short"
+          "unit": "reqps",
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "showPoints": "never",
+            "stacking": {
+              "mode": "normal",
+              "group": "A"
+            }
+          },
+          "color": {
+            "mode": "palette-classic"
+          },
+          "min": 0
         },
         "overrides": []
       },
       "options": {
         "legend": {
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
-          "mode": "multi"
+          "mode": "multi",
+          "sort": "desc"
         }
       }
     },
     {
       "id": 6,
       "type": "timeseries",
-      "title": "Выполнения задач worker",
+      "title": "p95 длительности HTTP по маршрутам",
+      "description": "",
       "datasource": {
         "type": "prometheus",
         "uid": "PBFA97CFB590B2093"
       },
       "gridPos": {
-        "x": 0,
-        "y": 16,
+        "x": 12,
+        "y": 4,
         "w": 12,
-        "h": 7
+        "h": 8
       },
       "targets": [
         {
           "refId": "A",
-          "expr": "sum by (task, status) (rate(moneybox_task_runs_total{job=\"moneybox_worker\"}[5m]))",
           "datasource": {
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
-          }
+          },
+          "expr": "histogram_quantile(0.95, sum by (le, route) (rate(moneybox_http_request_duration_seconds_bucket{job=\"moneybox\",route!=\"/metrics\"}[5m])))",
+          "legendFormat": "{{route}}"
         }
       ],
       "fieldConfig": {
         "defaults": {
-          "unit": "short"
+          "unit": "s",
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "showPoints": "never",
+            "stacking": {
+              "mode": "none",
+              "group": "A"
+            }
+          },
+          "color": {
+            "mode": "palette-classic"
+          },
+          "min": 0
         },
         "overrides": []
       },
       "options": {
         "legend": {
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
-          "mode": "multi"
+          "mode": "multi",
+          "sort": "desc"
         }
       }
     },
     {
       "id": 7,
       "type": "timeseries",
-      "title": "Очередь задач по статусам",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "gridPos": {
-        "x": 12,
-        "y": 16,
-        "w": 12,
-        "h": 7
-      },
-      "targets": [
-        {
-          "refId": "A",
-          "expr": "sum by (status) (moneybox_queue_jobs{job=\"moneybox_worker\"})",
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          }
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom"
-        },
-        "tooltip": {
-          "mode": "multi"
-        }
-      }
-    },
-    {
-      "id": 8,
-      "type": "stat",
-      "title": "Время с последнего обновления курсов",
+      "title": "Ошибки API по типам",
+      "description": "",
       "datasource": {
         "type": "prometheus",
         "uid": "PBFA97CFB590B2093"
       },
       "gridPos": {
         "x": 0,
-        "y": 24,
+        "y": 12,
         "w": 12,
-        "h": 7
+        "h": 8
       },
       "targets": [
         {
           "refId": "A",
-          "expr": "time() - max(moneybox_task_last_success_timestamp_seconds{job=\"moneybox_worker\",task=\"rates:refresh\"})",
           "datasource": {
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
-          }
+          },
+          "expr": "sum by (module, type) (rate(moneybox_errors_total{job=\"moneybox\"}[5m]))",
+          "legendFormat": "{{module}} / {{type}}"
         }
       ],
       "fieldConfig": {
         "defaults": {
-          "unit": "s"
+          "unit": "ops",
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "showPoints": "never",
+            "stacking": {
+              "mode": "none",
+              "group": "A"
+            }
+          },
+          "color": {
+            "mode": "palette-classic"
+          },
+          "min": 0
         },
         "overrides": []
       },
       "options": {
         "legend": {
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
-          "mode": "multi"
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "id": 8,
+      "type": "timeseries",
+      "title": "Выполнения задач worker",
+      "description": "",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 12,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "expr": "sum by (task, status) (rate(moneybox_task_runs_total{job=\"moneybox_worker\"}[5m]))",
+          "legendFormat": "{{task}} — {{status}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ops",
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "showPoints": "never",
+            "stacking": {
+              "mode": "none",
+              "group": "A"
+            }
+          },
+          "color": {
+            "mode": "palette-classic"
+          },
+          "min": 0
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
         }
       }
     },
     {
       "id": 9,
       "type": "timeseries",
-      "title": "p95 длительности HTTP",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "gridPos": {
-        "x": 12,
-        "y": 24,
-        "w": 12,
-        "h": 7
-      },
-      "targets": [
-        {
-          "refId": "A",
-          "expr": "histogram_quantile(0.95, sum by (le, route) (rate(moneybox_http_request_duration_seconds_bucket{job=\"moneybox\",route!=\"/metrics\"}[5m])))",
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          }
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom"
-        },
-        "tooltip": {
-          "mode": "multi"
-        }
-      }
-    },
-    {
-      "id": 10,
-      "type": "timeseries",
-      "title": "Последовательные ошибки задач",
+      "title": "Очередь задач по статусам",
+      "description": "",
       "datasource": {
         "type": "prometheus",
         "uid": "PBFA97CFB590B2093"
       },
       "gridPos": {
         "x": 0,
-        "y": 32,
+        "y": 20,
         "w": 12,
-        "h": 7
+        "h": 8
       },
       "targets": [
         {
           "refId": "A",
-          "expr": "max by (task) (moneybox_task_failure_streak{job=\"moneybox_worker\"})",
           "datasource": {
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
-          }
+          },
+          "expr": "sum by (status) (moneybox_queue_jobs{job=\"moneybox_worker\"})",
+          "legendFormat": "{{status}}"
         }
       ],
       "fieldConfig": {
         "defaults": {
-          "unit": "short"
+          "unit": "short",
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "showPoints": "never",
+            "stacking": {
+              "mode": "none",
+              "group": "A"
+            }
+          },
+          "color": {
+            "mode": "palette-classic"
+          },
+          "min": 0
         },
         "overrides": []
       },
       "options": {
         "legend": {
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
-          "mode": "multi"
+          "mode": "multi",
+          "sort": "desc"
         }
+      }
+    },
+    {
+      "id": 10,
+      "type": "timeseries",
+      "title": "Ошибки задач подряд",
+      "description": "Сбрасывается в 0 после успешного выполнения",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 20,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "expr": "max by (task) (moneybox_task_failure_streak{job=\"moneybox_worker\"})",
+          "legendFormat": "{{task}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "showPoints": "never",
+            "stacking": {
+              "mode": "none",
+              "group": "A"
+            }
+          },
+          "color": {
+            "mode": "palette-classic"
+          },
+          "min": 0
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "id": 11,
+      "type": "logs",
+      "title": "Ошибки в логах api и worker",
+      "datasource": {
+        "type": "loki",
+        "uid": "P8E80F9AEF21F6940"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 28,
+        "w": 24,
+        "h": 10
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "loki",
+            "uid": "P8E80F9AEF21F6940"
+          },
+          "expr": "{container=~\"/?moneybox-(api|worker|migrate)-1\"} |~ `\"level\": \"(ERROR|CRITICAL)\"`"
+        }
+      ],
+      "options": {
+        "showTime": true,
+        "wrapLogMessage": true,
+        "sortOrder": "Descending",
+        "enableLogDetails": true,
+        "dedupStrategy": "none",
+        "prettifyLogMessage": false
       }
     }
   ]
