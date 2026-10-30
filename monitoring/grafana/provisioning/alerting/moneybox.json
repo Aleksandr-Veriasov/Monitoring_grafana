@@ -1,0 +1,375 @@
+{
+  "apiVersion": 1,
+  "contactPoints": [
+    {
+      "orgId": 1,
+      "name": "MoneyBox Telegram",
+      "receivers": [
+        {
+          "uid": "moneybox_telegram",
+          "type": "telegram",
+          "disableResolveMessage": false,
+          "settings": {
+            "bottoken": "$TELEGRAM_BOT_TOKEN",
+            "chatid": "$BOT_ADMIN",
+            "message": "{{ template \"default.message\" . }}"
+          }
+        }
+      ]
+    }
+  ],
+  "groups": [
+    {
+      "orgId": 1,
+      "name": "moneybox",
+      "folder": "Infra",
+      "interval": "1m",
+      "rules": [
+        {
+          "uid": "mbApi5xxRate",
+          "title": "MoneyBox: рост ответов 5xx",
+          "condition": "B",
+          "data": [
+            {
+              "refId": "A",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 86400,
+                "to": 0
+              },
+              "datasourceUid": "PBFA97CFB590B2093",
+              "model": {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "PBFA97CFB590B2093"
+                },
+                "editorMode": "code",
+                "expr": "sum(rate(moneybox_http_requests_total{job=\"moneybox\",status=~\"5..\"}[5m])) / clamp_min(sum(rate(moneybox_http_requests_total{job=\"moneybox\",route!=\"/metrics\"}[5m])), 0.1)",
+                "instant": true,
+                "intervalMs": 1000,
+                "maxDataPoints": 43200,
+                "range": false,
+                "refId": "A"
+              }
+            },
+            {
+              "refId": "B",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 0,
+                "to": 0
+              },
+              "datasourceUid": "__expr__",
+              "model": {
+                "conditions": [
+                  {
+                    "evaluator": {
+                      "params": [
+                        0.05
+                      ],
+                      "type": "gt"
+                    },
+                    "operator": {
+                      "type": "and"
+                    },
+                    "query": {
+                      "params": [
+                        "B"
+                      ]
+                    },
+                    "reducer": {
+                      "params": [],
+                      "type": "last"
+                    },
+                    "type": "query"
+                  }
+                ],
+                "datasource": {
+                  "type": "__expr__",
+                  "uid": "__expr__"
+                },
+                "expression": "A",
+                "intervalMs": 1000,
+                "maxDataPoints": 43200,
+                "refId": "B",
+                "type": "threshold"
+              }
+            }
+          ],
+          "noDataState": "OK",
+          "execErrState": "Error",
+          "for": "5m",
+          "annotations": {
+            "summary": "Доля ошибок API выше 5%",
+            "description": "Доля ответов 5xx превысила 5% за последние пять минут."
+          },
+          "labels": {
+            "service": "moneybox",
+            "severity": "warning"
+          },
+          "notification_settings": {
+            "receiver": "MoneyBox Telegram"
+          }
+        },
+        {
+          "uid": "mbWorkerFailures",
+          "title": "MoneyBox: повторные ошибки задач",
+          "condition": "B",
+          "data": [
+            {
+              "refId": "A",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 86400,
+                "to": 0
+              },
+              "datasourceUid": "PBFA97CFB590B2093",
+              "model": {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "PBFA97CFB590B2093"
+                },
+                "editorMode": "code",
+                "expr": "max(moneybox_task_failure_streak{job=\"moneybox_worker\"})",
+                "instant": true,
+                "intervalMs": 1000,
+                "maxDataPoints": 43200,
+                "range": false,
+                "refId": "A"
+              }
+            },
+            {
+              "refId": "B",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 0,
+                "to": 0
+              },
+              "datasourceUid": "__expr__",
+              "model": {
+                "conditions": [
+                  {
+                    "evaluator": {
+                      "params": [
+                        2
+                      ],
+                      "type": "gt"
+                    },
+                    "operator": {
+                      "type": "and"
+                    },
+                    "query": {
+                      "params": [
+                        "B"
+                      ]
+                    },
+                    "reducer": {
+                      "params": [],
+                      "type": "last"
+                    },
+                    "type": "query"
+                  }
+                ],
+                "datasource": {
+                  "type": "__expr__",
+                  "uid": "__expr__"
+                },
+                "expression": "A",
+                "intervalMs": 1000,
+                "maxDataPoints": 43200,
+                "refId": "B",
+                "type": "threshold"
+              }
+            }
+          ],
+          "noDataState": "OK",
+          "execErrState": "Error",
+          "for": "1m",
+          "annotations": {
+            "summary": "Задача worker завершилась ошибкой три раза подряд",
+            "description": "Для одной задачи зарегистрированы три последовательных неудачных выполнения."
+          },
+          "labels": {
+            "service": "moneybox",
+            "severity": "warning"
+          },
+          "notification_settings": {
+            "receiver": "MoneyBox Telegram"
+          }
+        },
+        {
+          "uid": "mbQueueGrowth",
+          "title": "MoneyBox: растёт очередь задач",
+          "condition": "B",
+          "data": [
+            {
+              "refId": "A",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 86400,
+                "to": 0
+              },
+              "datasourceUid": "PBFA97CFB590B2093",
+              "model": {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "PBFA97CFB590B2093"
+                },
+                "editorMode": "code",
+                "expr": "predict_linear(sum(moneybox_queue_jobs{job=\"moneybox_worker\",status=\"todo\"})[30m:30s], 600)",
+                "instant": true,
+                "intervalMs": 1000,
+                "maxDataPoints": 43200,
+                "range": false,
+                "refId": "A"
+              }
+            },
+            {
+              "refId": "B",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 0,
+                "to": 0
+              },
+              "datasourceUid": "__expr__",
+              "model": {
+                "conditions": [
+                  {
+                    "evaluator": {
+                      "params": [
+                        25
+                      ],
+                      "type": "gt"
+                    },
+                    "operator": {
+                      "type": "and"
+                    },
+                    "query": {
+                      "params": [
+                        "B"
+                      ]
+                    },
+                    "reducer": {
+                      "params": [],
+                      "type": "last"
+                    },
+                    "type": "query"
+                  }
+                ],
+                "datasource": {
+                  "type": "__expr__",
+                  "uid": "__expr__"
+                },
+                "expression": "A",
+                "intervalMs": 1000,
+                "maxDataPoints": 43200,
+                "refId": "B",
+                "type": "threshold"
+              }
+            }
+          ],
+          "noDataState": "OK",
+          "execErrState": "Error",
+          "for": "5m",
+          "annotations": {
+            "summary": "Прогноз очереди превышает 25 ожидающих задач",
+            "description": "Линейный прогноз по очереди на 10 минут превышает 25 ожидающих задач."
+          },
+          "labels": {
+            "service": "moneybox",
+            "severity": "warning"
+          },
+          "notification_settings": {
+            "receiver": "MoneyBox Telegram"
+          }
+        },
+        {
+          "uid": "mbRateUpdateMissing",
+          "title": "MoneyBox: нет обновления курсов за сутки",
+          "condition": "B",
+          "data": [
+            {
+              "refId": "A",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 86400,
+                "to": 0
+              },
+              "datasourceUid": "PBFA97CFB590B2093",
+              "model": {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "PBFA97CFB590B2093"
+                },
+                "editorMode": "code",
+                "expr": "absent_over_time(moneybox_task_last_success_timestamp_seconds{job=\"moneybox_worker\",task=\"rates:refresh\"}[24h]) or (time() - moneybox_task_last_success_timestamp_seconds{job=\"moneybox_worker\",task=\"rates:refresh\"} > 86400)",
+                "instant": true,
+                "intervalMs": 1000,
+                "maxDataPoints": 43200,
+                "range": false,
+                "refId": "A"
+              }
+            },
+            {
+              "refId": "B",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 0,
+                "to": 0
+              },
+              "datasourceUid": "__expr__",
+              "model": {
+                "conditions": [
+                  {
+                    "evaluator": {
+                      "params": [
+                        0
+                      ],
+                      "type": "gt"
+                    },
+                    "operator": {
+                      "type": "and"
+                    },
+                    "query": {
+                      "params": [
+                        "B"
+                      ]
+                    },
+                    "reducer": {
+                      "params": [],
+                      "type": "last"
+                    },
+                    "type": "query"
+                  }
+                ],
+                "datasource": {
+                  "type": "__expr__",
+                  "uid": "__expr__"
+                },
+                "expression": "A",
+                "intervalMs": 1000,
+                "maxDataPoints": 43200,
+                "refId": "B",
+                "type": "threshold"
+              }
+            }
+          ],
+          "noDataState": "OK",
+          "execErrState": "Error",
+          "for": "1m",
+          "annotations": {
+            "summary": "Курсы валют не обновлялись больше суток",
+            "description": "Задача rates:refresh не завершалась успешно более 24 часов."
+          },
+          "labels": {
+            "service": "moneybox",
+            "severity": "warning"
+          },
+          "notification_settings": {
+            "receiver": "MoneyBox Telegram"
+          }
+        }
+      ]
+    }
+  ]
+}

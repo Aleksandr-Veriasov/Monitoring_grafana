@@ -106,6 +106,8 @@ services:
       GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:?GRAFANA_ADMIN_USER is required}
       GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:?GRAFANA_ADMIN_PASSWORD is required}
       GF_USERS_ALLOW_SIGN_UP: "false"
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:?TELEGRAM_BOT_TOKEN is required}
+      BOT_ADMIN: ${BOT_ADMIN:?BOT_ADMIN is required}
       GF_SERVER_ROOT_URL: https://grafana.infrasprint1veriasov.ru/
       GF_SERVER_SERVE_FROM_SUB_PATH: "false"
     volumes:
