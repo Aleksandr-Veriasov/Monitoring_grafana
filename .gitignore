@@ -1,15 +1,15 @@
-# Игнорируем виртуальное окружение
+# Virtual environment
 venv/
 __pycache__/
 *.pyc
 
-# Игнорируем файлы и папки IDE (например, для VS Code)
+# IDE files and directories (for example, VS Code)
 .vscode/
 
-# Игнорируем файлы конфигурации
+# Local configuration
 .env
 
-# Логи
+# Logs
 *.log
 
 
@@ -35,3 +35,6 @@ docker-compose.override.yml
 docker-compose.db.yml
 
 **/user.session
+
+# Local agent instructions
+AGENTS.md
