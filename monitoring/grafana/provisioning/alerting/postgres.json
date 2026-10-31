@@ -1,0 +1,357 @@
+{
+  "apiVersion": 1,
+  "groups": [
+    {
+      "orgId": 1,
+      "name": "postgres",
+      "folder": "Infra",
+      "interval": "1m",
+      "rules": [
+        {
+          "uid": "pgDown",
+          "title": "PostgreSQL: server unavailable",
+          "condition": "B",
+          "data": [
+            {
+              "refId": "A",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 600,
+                "to": 0
+              },
+              "datasourceUid": "PBFA97CFB590B2093",
+              "model": {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "PBFA97CFB590B2093"
+                },
+                "editorMode": "code",
+                "expr": "min(pg_up{job=\"postgres\"} or up{job=\"postgres\"})",
+                "instant": true,
+                "intervalMs": 1000,
+                "maxDataPoints": 43200,
+                "range": false,
+                "refId": "A"
+              }
+            },
+            {
+              "refId": "B",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 0,
+                "to": 0
+              },
+              "datasourceUid": "__expr__",
+              "model": {
+                "conditions": [
+                  {
+                    "evaluator": {
+                      "params": [
+                        1
+                      ],
+                      "type": "lt"
+                    },
+                    "operator": {
+                      "type": "and"
+                    },
+                    "query": {
+                      "params": [
+                        "B"
+                      ]
+                    },
+                    "reducer": {
+                      "params": [],
+                      "type": "last"
+                    },
+                    "type": "query"
+                  }
+                ],
+                "datasource": {
+                  "type": "__expr__",
+                  "uid": "__expr__"
+                },
+                "expression": "A",
+                "intervalMs": 1000,
+                "maxDataPoints": 43200,
+                "refId": "B",
+                "type": "threshold"
+              }
+            }
+          ],
+          "noDataState": "Alerting",
+          "execErrState": "Error",
+          "for": "2m",
+          "annotations": {
+            "summary": "PostgreSQL or postgres_exporter is down",
+            "description": "postgres_exporter cannot connect to PostgreSQL, or Prometheus cannot scrape the exporter."
+          },
+          "labels": {
+            "service": "postgres",
+            "severity": "critical"
+          },
+          "notification_settings": {
+            "receiver": "MoneyBox Telegram"
+          }
+        },
+        {
+          "uid": "pgConnectionsHigh",
+          "title": "PostgreSQL: connections near the limit",
+          "condition": "B",
+          "data": [
+            {
+              "refId": "A",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 600,
+                "to": 0
+              },
+              "datasourceUid": "PBFA97CFB590B2093",
+              "model": {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "PBFA97CFB590B2093"
+                },
+                "editorMode": "code",
+                "expr": "sum(pg_stat_activity_count{job=\"postgres\"}) / max(pg_settings_max_connections{job=\"postgres\"})",
+                "instant": true,
+                "intervalMs": 1000,
+                "maxDataPoints": 43200,
+                "range": false,
+                "refId": "A"
+              }
+            },
+            {
+              "refId": "B",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 0,
+                "to": 0
+              },
+              "datasourceUid": "__expr__",
+              "model": {
+                "conditions": [
+                  {
+                    "evaluator": {
+                      "params": [
+                        0.8
+                      ],
+                      "type": "gt"
+                    },
+                    "operator": {
+                      "type": "and"
+                    },
+                    "query": {
+                      "params": [
+                        "B"
+                      ]
+                    },
+                    "reducer": {
+                      "params": [],
+                      "type": "last"
+                    },
+                    "type": "query"
+                  }
+                ],
+                "datasource": {
+                  "type": "__expr__",
+                  "uid": "__expr__"
+                },
+                "expression": "A",
+                "intervalMs": 1000,
+                "maxDataPoints": 43200,
+                "refId": "B",
+                "type": "threshold"
+              }
+            }
+          ],
+          "noDataState": "OK",
+          "execErrState": "Error",
+          "for": "5m",
+          "annotations": {
+            "summary": "More than 80% of max_connections are in use",
+            "description": "New connections will soon be rejected. Check connection pools and sessions idle in transaction."
+          },
+          "labels": {
+            "service": "postgres",
+            "severity": "warning"
+          },
+          "notification_settings": {
+            "receiver": "MoneyBox Telegram"
+          }
+        },
+        {
+          "uid": "pgLongTransaction",
+          "title": "PostgreSQL: long-running transaction",
+          "condition": "B",
+          "data": [
+            {
+              "refId": "A",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 600,
+                "to": 0
+              },
+              "datasourceUid": "PBFA97CFB590B2093",
+              "model": {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "PBFA97CFB590B2093"
+                },
+                "editorMode": "code",
+                "expr": "max(pg_long_running_transactions_oldest_timestamp_seconds{job=\"postgres\"})",
+                "instant": true,
+                "intervalMs": 1000,
+                "maxDataPoints": 43200,
+                "range": false,
+                "refId": "A"
+              }
+            },
+            {
+              "refId": "B",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 0,
+                "to": 0
+              },
+              "datasourceUid": "__expr__",
+              "model": {
+                "conditions": [
+                  {
+                    "evaluator": {
+                      "params": [
+                        900
+                      ],
+                      "type": "gt"
+                    },
+                    "operator": {
+                      "type": "and"
+                    },
+                    "query": {
+                      "params": [
+                        "B"
+                      ]
+                    },
+                    "reducer": {
+                      "params": [],
+                      "type": "last"
+                    },
+                    "type": "query"
+                  }
+                ],
+                "datasource": {
+                  "type": "__expr__",
+                  "uid": "__expr__"
+                },
+                "expression": "A",
+                "intervalMs": 1000,
+                "maxDataPoints": 43200,
+                "refId": "B",
+                "type": "threshold"
+              }
+            }
+          ],
+          "noDataState": "OK",
+          "execErrState": "Error",
+          "for": "5m",
+          "annotations": {
+            "summary": "A transaction has been open for more than 15 minutes",
+            "description": "Long transactions hold locks and block autovacuum. Find it in pg_stat_activity by xact_start."
+          },
+          "labels": {
+            "service": "postgres",
+            "severity": "warning"
+          },
+          "notification_settings": {
+            "receiver": "MoneyBox Telegram"
+          }
+        },
+        {
+          "uid": "pgDeadlocks",
+          "title": "PostgreSQL: deadlocks",
+          "condition": "B",
+          "data": [
+            {
+              "refId": "A",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 600,
+                "to": 0
+              },
+              "datasourceUid": "PBFA97CFB590B2093",
+              "model": {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "PBFA97CFB590B2093"
+                },
+                "editorMode": "code",
+                "expr": "sum(increase(pg_stat_database_deadlocks{job=\"postgres\"}[10m]))",
+                "instant": true,
+                "intervalMs": 1000,
+                "maxDataPoints": 43200,
+                "range": false,
+                "refId": "A"
+              }
+            },
+            {
+              "refId": "B",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 0,
+                "to": 0
+              },
+              "datasourceUid": "__expr__",
+              "model": {
+                "conditions": [
+                  {
+                    "evaluator": {
+                      "params": [
+                        0
+                      ],
+                      "type": "gt"
+                    },
+                    "operator": {
+                      "type": "and"
+                    },
+                    "query": {
+                      "params": [
+                        "B"
+                      ]
+                    },
+                    "reducer": {
+                      "params": [],
+                      "type": "last"
+                    },
+                    "type": "query"
+                  }
+                ],
+                "datasource": {
+                  "type": "__expr__",
+                  "uid": "__expr__"
+                },
+                "expression": "A",
+                "intervalMs": 1000,
+                "maxDataPoints": 43200,
+                "refId": "B",
+                "type": "threshold"
+              }
+            }
+          ],
+          "noDataState": "OK",
+          "execErrState": "Error",
+          "for": "0s",
+          "annotations": {
+            "summary": "Deadlocks detected in the last 10 minutes",
+            "description": "PostgreSQL aborted transactions due to deadlocks. See the PostgreSQL dashboard logs panel."
+          },
+          "labels": {
+            "service": "postgres",
+            "severity": "warning"
+          },
+          "notification_settings": {
+            "receiver": "MoneyBox Telegram"
+          }
+        }
+      ]
+    }
+  ]
+}

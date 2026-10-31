@@ -22,6 +22,10 @@ networks:
   proxy_net:
     external: true
     name: proxy_net
+  # Network of the shared PostgreSQL server (/opt/infra, project infra).
+  db_net:
+    external: true
+    name: db_net
 
 services:
   prometheus:
@@ -97,6 +101,23 @@ services:
       - /var/lib/docker/:/var/lib/docker:ro
     networks:
       - monitoring_net
+    restart: unless-stopped
+
+  postgres_exporter:
+    image: quay.io/prometheuscommunity/postgres-exporter:v0.20.1
+    container_name: postgres_exporter
+    environment:
+      # Read-only role with pg_monitor; see the CREATE ROLE note in prometheus.yml.
+      DATA_SOURCE_URI: postgres:5432/postgres?sslmode=disable
+      DATA_SOURCE_USER: ${POSTGRES_EXPORTER_USER:-postgres_exporter}
+      DATA_SOURCE_PASS: ${POSTGRES_EXPORTER_PASSWORD:?POSTGRES_EXPORTER_PASSWORD is required}
+    command:
+      - --collector.long_running_transactions
+      - --collector.postmaster
+      - --collector.stat_checkpointer
+    networks:
+      - monitoring_net
+      - db_net
     restart: unless-stopped
 
   grafana:
