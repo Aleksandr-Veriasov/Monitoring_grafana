@@ -665,9 +665,9 @@
       }
     },
     {
-      "id": 11,
+      "id": 12,
       "type": "logs",
-      "title": "Ошибки в логах api и worker",
+      "title": "Логи API (INFO и выше)",
       "datasource": {
         "type": "loki",
         "uid": "P8E80F9AEF21F6940"
@@ -675,8 +675,8 @@
       "gridPos": {
         "x": 0,
         "y": 28,
-        "w": 24,
-        "h": 10
+        "w": 12,
+        "h": 12
       },
       "targets": [
         {
@@ -685,7 +685,7 @@
             "type": "loki",
             "uid": "P8E80F9AEF21F6940"
           },
-          "expr": "{container=~\"/?moneybox-(api|worker|migrate)-1\"} |~ `^(ERROR|CRITICAL) `"
+          "expr": "{container=~\"/?moneybox-api-1\"} |~ `^(INFO|WARNING|ERROR|CRITICAL) `"
         }
       ],
       "options": {
@@ -696,6 +696,86 @@
         "dedupStrategy": "none",
         "prettifyLogMessage": false
       }
+    },
+    {
+      "id": 13,
+      "type": "logs",
+      "title": "Логи worker (INFO и выше)",
+      "datasource": {
+        "type": "loki",
+        "uid": "P8E80F9AEF21F6940"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 28,
+        "w": 12,
+        "h": 12
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "loki",
+            "uid": "P8E80F9AEF21F6940"
+          },
+          "expr": "{container=~\"/?moneybox-worker-1\"} |~ `^(INFO|WARNING|ERROR|CRITICAL) `"
+        }
+      ],
+      "options": {
+        "showTime": true,
+        "wrapLogMessage": true,
+        "sortOrder": "Descending",
+        "enableLogDetails": true,
+        "dedupStrategy": "none",
+        "prettifyLogMessage": false
+      }
+    },
+    {
+      "id": 14,
+      "type": "row",
+      "title": "Ошибки в логах",
+      "collapsed": true,
+      "gridPos": {
+        "x": 0,
+        "y": 40,
+        "w": 24,
+        "h": 1
+      },
+      "panels": [
+        {
+          "id": 11,
+          "type": "logs",
+          "title": "Ошибки в логах api и worker",
+          "datasource": {
+            "type": "loki",
+            "uid": "P8E80F9AEF21F6940"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 41,
+            "w": 24,
+            "h": 10
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "loki",
+                "uid": "P8E80F9AEF21F6940"
+              },
+              "expr": "{container=~\"/?moneybox-(api|worker|migrate)-1\"} |~ `^(ERROR|CRITICAL) `"
+            }
+          ],
+          "options": {
+            "showTime": true,
+            "wrapLogMessage": true,
+            "sortOrder": "Descending",
+            "enableLogDetails": true,
+            "dedupStrategy": "none",
+            "prettifyLogMessage": false
+          }
+        }
+      ]
     }
   ]
 }
