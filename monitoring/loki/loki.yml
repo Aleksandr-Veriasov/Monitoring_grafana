@@ -35,6 +35,21 @@ compactor:
 
 limits_config:
   retention_period: 336h
+  # Fewer, larger subqueries for long dashboard ranges (default 30m)
+  split_queries_by_interval: 24h
+  max_query_parallelism: 32
+
+# Queue limits: excess subqueries wait instead of failing with
+# "too many outstanding requests"
+frontend:
+  max_outstanding_per_tenant: 4096
+
+query_scheduler:
+  max_outstanding_requests_per_tenant: 4096
+
+# Subqueries executed at once; caps CPU/RAM spikes (default 10)
+querier:
+  max_concurrent: 4
 
 ruler:
   alertmanager_url: http://localhost:9093
