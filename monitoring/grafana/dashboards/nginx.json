@@ -1,7 +1,7 @@
 {
   "uid": "nginx",
   "title": "Nginx",
-  "description": "Central reverse proxy (proxy-nginx): traffic, status codes, latency and errors from JSON access logs in Loki.",
+  "description": "Центральный reverse proxy (proxy-nginx): трафик, коды ответов, задержки и ошибки по JSON access-логам из Loki.",
   "tags": [
     "infra",
     "nginx"
@@ -19,9 +19,9 @@
     "list": [
       {
         "name": "host",
-        "label": "Host",
+        "label": "Хост",
         "type": "custom",
-        "description": "server_name values from nginx.conf; update when a site is added",
+        "description": "Значения server_name из nginx.conf; обновить при добавлении сайта",
         "query": "smartbot.infrasprint1veriasov.ru,sipyagina.infrasprint1veriasov.ru,grafana.infrasprint1veriasov.ru,srpskibot.infrasprint1veriasov.ru,moneybox.alexcraftlab.com",
         "multi": true,
         "includeAll": true,
@@ -42,8 +42,8 @@
     {
       "id": 1,
       "type": "stat",
-      "title": "Requests 24h",
-      "description": "All access-log lines for the selected hosts",
+      "title": "Запросы за 24ч",
+      "description": "Все строки access-лога по выбранным хостам",
       "datasource": {
         "type": "loki",
         "uid": "P8E80F9AEF21F6940"
@@ -105,8 +105,8 @@
     {
       "id": 2,
       "type": "stat",
-      "title": "5xx share 1h",
-      "description": "Responses 5xx relative to all requests",
+      "title": "Доля 5xx за 1ч",
+      "description": "Ответы 5xx относительно всех запросов",
       "datasource": {
         "type": "loki",
         "uid": "P8E80F9AEF21F6940"
@@ -176,8 +176,8 @@
     {
       "id": 3,
       "type": "stat",
-      "title": "502/504 1h",
-      "description": "Upstream down (502) or timed out (504)",
+      "title": "502/504 за 1ч",
+      "description": "Бэкенд недоступен (502) или не ответил вовремя (504)",
       "datasource": {
         "type": "loki",
         "uid": "P8E80F9AEF21F6940"
@@ -247,8 +247,8 @@
     {
       "id": 4,
       "type": "stat",
-      "title": "p95 latency 1h",
-      "description": "request_time p95, rejected (444) requests excluded",
+      "title": "Задержка p95 за 1ч",
+      "description": "p95 по request_time, без отклонённых (444) запросов",
       "datasource": {
         "type": "loki",
         "uid": "P8E80F9AEF21F6940"
@@ -318,8 +318,8 @@
     {
       "id": 5,
       "type": "stat",
-      "title": "Rejected 24h",
-      "description": "Status 444: unknown Host or bare IP (scanners)",
+      "title": "Отклонено за 24ч",
+      "description": "Статус 444: неизвестный Host или голый IP (сканеры)",
       "datasource": {
         "type": "loki",
         "uid": "P8E80F9AEF21F6940"
@@ -381,8 +381,8 @@
     {
       "id": 6,
       "type": "stat",
-      "title": "Nginx errors 24h",
-      "description": "error_log lines with level error or higher",
+      "title": "Ошибки Nginx за 24ч",
+      "description": "Строки error_log с уровнем error и выше",
       "datasource": {
         "type": "loki",
         "uid": "P8E80F9AEF21F6940"
@@ -452,8 +452,8 @@
     {
       "id": 7,
       "type": "timeseries",
-      "title": "Requests by host",
-      "description": "Requests per second",
+      "title": "Запросы по хостам",
+      "description": "Запросов в секунду",
       "datasource": {
         "type": "loki",
         "uid": "P8E80F9AEF21F6940"
@@ -511,8 +511,8 @@
     {
       "id": 8,
       "type": "timeseries",
-      "title": "Requests by status class",
-      "description": "Requests per second",
+      "title": "Запросы по классам статусов",
+      "description": "Запросов в секунду",
       "datasource": {
         "type": "loki",
         "uid": "P8E80F9AEF21F6940"
@@ -570,8 +570,8 @@
     {
       "id": 9,
       "type": "timeseries",
-      "title": "Request time p95 by host",
-      "description": "Full request time as seen by the client side of nginx",
+      "title": "Время запроса p95 по хостам",
+      "description": "Полное время обработки запроса в nginx",
       "datasource": {
         "type": "loki",
         "uid": "P8E80F9AEF21F6940"
@@ -629,8 +629,8 @@
     {
       "id": 10,
       "type": "timeseries",
-      "title": "Upstream response time p95 by host",
-      "description": "Time spent waiting for the backend",
+      "title": "Время ответа бэкенда p95 по хостам",
+      "description": "Сколько nginx ждал ответа бэкенда",
       "datasource": {
         "type": "loki",
         "uid": "P8E80F9AEF21F6940"
@@ -688,8 +688,8 @@
     {
       "id": 11,
       "type": "timeseries",
-      "title": "5xx by host",
-      "description": "Server errors per 5 minutes",
+      "title": "5xx по хостам",
+      "description": "Ошибки сервера за 5 минут",
       "datasource": {
         "type": "loki",
         "uid": "P8E80F9AEF21F6940"
@@ -747,8 +747,8 @@
     {
       "id": 12,
       "type": "timeseries",
-      "title": "4xx by host",
-      "description": "Client errors per 5 minutes; 404 bursts usually mean scanners",
+      "title": "4xx по хостам",
+      "description": "Ошибки клиента за 5 минут; всплески 404 обычно означают сканеры",
       "datasource": {
         "type": "loki",
         "uid": "P8E80F9AEF21F6940"
@@ -806,8 +806,8 @@
     {
       "id": 13,
       "type": "table",
-      "title": "Top paths",
-      "description": "Requests by host and path over the selected range",
+      "title": "Популярные пути",
+      "description": "Запросы по хосту и пути за выбранный период",
       "datasource": {
         "type": "loki",
         "uid": "P8E80F9AEF21F6940"
@@ -843,7 +843,12 @@
               "Time": true
             },
             "renameByName": {
-              "Value": "Requests"
+              "Value": "Запросы",
+              "Value #A": "Запросы",
+              "host": "Хост",
+              "uri": "Путь",
+              "status": "Статус",
+              "remote_addr": "IP клиента"
             }
           }
         },
@@ -852,7 +857,7 @@
           "options": {
             "sort": [
               {
-                "field": "Requests",
+                "field": "Запросы",
                 "desc": true
               }
             ]
@@ -878,8 +883,8 @@
     {
       "id": 14,
       "type": "table",
-      "title": "Top error paths",
-      "description": "4xx/5xx responses (except 444) by host, path and status",
+      "title": "Пути с ошибками",
+      "description": "Ответы 4xx/5xx (кроме 444) по хосту, пути и статусу",
       "datasource": {
         "type": "loki",
         "uid": "P8E80F9AEF21F6940"
@@ -915,7 +920,12 @@
               "Time": true
             },
             "renameByName": {
-              "Value": "Requests"
+              "Value": "Запросы",
+              "Value #A": "Запросы",
+              "host": "Хост",
+              "uri": "Путь",
+              "status": "Статус",
+              "remote_addr": "IP клиента"
             }
           }
         },
@@ -924,7 +934,7 @@
           "options": {
             "sort": [
               {
-                "field": "Requests",
+                "field": "Запросы",
                 "desc": true
               }
             ]
@@ -950,8 +960,8 @@
     {
       "id": 15,
       "type": "table",
-      "title": "Top client IPs",
-      "description": "Requests by client address over the selected range",
+      "title": "Топ IP клиентов",
+      "description": "Запросы по адресу клиента за выбранный период",
       "datasource": {
         "type": "loki",
         "uid": "P8E80F9AEF21F6940"
@@ -987,7 +997,12 @@
               "Time": true
             },
             "renameByName": {
-              "Value": "Requests"
+              "Value": "Запросы",
+              "Value #A": "Запросы",
+              "host": "Хост",
+              "uri": "Путь",
+              "status": "Статус",
+              "remote_addr": "IP клиента"
             }
           }
         },
@@ -996,7 +1011,7 @@
           "options": {
             "sort": [
               {
-                "field": "Requests",
+                "field": "Запросы",
                 "desc": true
               }
             ]
@@ -1022,7 +1037,7 @@
     {
       "id": 16,
       "type": "logs",
-      "title": "Requests with 5xx",
+      "title": "Запросы с 5xx",
       "datasource": {
         "type": "loki",
         "uid": "P8E80F9AEF21F6940"
@@ -1055,7 +1070,7 @@
     {
       "id": 17,
       "type": "logs",
-      "title": "Nginx error log",
+      "title": "Error-лог Nginx",
       "datasource": {
         "type": "loki",
         "uid": "P8E80F9AEF21F6940"
