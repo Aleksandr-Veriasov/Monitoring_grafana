@@ -11,7 +11,7 @@
   "schemaVersion": 39,
   "refresh": "30s",
   "time": {
-    "from": "now-24h",
+    "from": "now-3h",
     "to": "now"
   },
   "timezone": "",
