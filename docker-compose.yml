@@ -108,7 +108,9 @@ services:
     container_name: postgres_exporter
     environment:
       # Read-only role with pg_monitor; see the CREATE ROLE note in prometheus.yml.
-      DATA_SOURCE_URI: postgres:5432/postgres?sslmode=disable
+      # Dedicated empty database, so the exporter's own transactions are not
+      # counted in application databases or in the "postgres" database.
+      DATA_SOURCE_URI: postgres:5432/monitoring?sslmode=disable
       DATA_SOURCE_USER: ${POSTGRES_EXPORTER_USER:-postgres_exporter}
       DATA_SOURCE_PASS: ${POSTGRES_EXPORTER_PASSWORD:?POSTGRES_EXPORTER_PASSWORD is required}
     command:

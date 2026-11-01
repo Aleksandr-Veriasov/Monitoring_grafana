@@ -59,6 +59,7 @@ scrape_configs:
   # Shared PostgreSQL server. The exporter connects as a dedicated role:
   #   CREATE ROLE postgres_exporter LOGIN PASSWORD '...';
   #   GRANT pg_monitor TO postgres_exporter;
+  #   CREATE DATABASE monitoring;
   - job_name: postgres
     static_configs:
       - targets:
