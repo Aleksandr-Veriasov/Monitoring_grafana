@@ -56,6 +56,25 @@ scrape_configs:
           service: moneybox
           component: worker
           container: moneybox-worker
+  # Secret Santa: alias'ы api и worker'а в monitoring_net (secret-santa/deploy/docker-compose.yml).
+  - job_name: secret_santa
+    metrics_path: /metrics
+    static_configs:
+      - targets:
+          - secret-santa:8000
+        labels:
+          service: secret-santa
+          component: api
+          container: secret-santa-api
+  - job_name: secret_santa_worker
+    metrics_path: /metrics
+    static_configs:
+      - targets:
+          - secret-santa-worker:9100
+        labels:
+          service: secret-santa
+          component: worker
+          container: secret-santa-worker
   # Shared PostgreSQL server. The exporter connects as a dedicated role:
   #   CREATE ROLE postgres_exporter LOGIN PASSWORD '...';
   #   GRANT pg_monitor TO postgres_exporter;
