@@ -490,7 +490,7 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "sum by(project) (label_replace(label_replace(container_memory_working_set_bytes{image!=\"\"}, \"project\", \"$1\", \"name\", \"(.+)\"), \"project\", \"$1\", \"container_label_com_docker_compose_project\", \"(.+)\"))",
+          "expr": "sum by(project) (label_replace(label_replace((container_memory_working_set_bytes{image!=\"\"} and on(id) (time() - container_last_seen{image!=\"\"} < 60)), \"project\", \"$1\", \"name\", \"(.+)\"), \"project\", \"$1\", \"container_label_com_docker_compose_project\", \"(.+)\"))",
           "refId": "A",
           "legendFormat": "{{project}}"
         },
@@ -616,7 +616,7 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "sum by(project) (label_replace(label_replace(rate(container_cpu_usage_seconds_total{image!=\"\"}[$__rate_interval]), \"project\", \"$1\", \"name\", \"(.+)\"), \"project\", \"$1\", \"container_label_com_docker_compose_project\", \"(.+)\"))",
+          "expr": "sum by(project) (label_replace(label_replace((rate(container_cpu_usage_seconds_total{image!=\"\"}[$__rate_interval]) and on(id) (time() - container_last_seen{image!=\"\"} < 60)), \"project\", \"$1\", \"name\", \"(.+)\"), \"project\", \"$1\", \"container_label_com_docker_compose_project\", \"(.+)\"))",
           "refId": "A",
           "legendFormat": "{{project}}"
         },
@@ -756,7 +756,7 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "sum by(name) (container_memory_working_set_bytes{image!=\"\"})",
+          "expr": "sum by(name) ((container_memory_working_set_bytes{image!=\"\"} and on(id) (time() - container_last_seen{image!=\"\"} < 60)))",
           "refId": "A",
           "legendFormat": "{{name}}"
         }
@@ -836,7 +836,7 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "sum by(name) (rate(container_cpu_usage_seconds_total{image!=\"\"}[$__rate_interval]))",
+          "expr": "sum by(name) ((rate(container_cpu_usage_seconds_total{image!=\"\"}[$__rate_interval]) and on(id) (time() - container_last_seen{image!=\"\"} < 60)))",
           "refId": "A",
           "legendFormat": "{{name}}"
         }
@@ -917,7 +917,7 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "sum by(name, project) (label_replace(label_replace(container_memory_working_set_bytes{image!=\"\"}, \"project\", \"$1\", \"name\", \"(.+)\"), \"project\", \"$1\", \"container_label_com_docker_compose_project\", \"(.+)\"))",
+          "expr": "sum by(name, project) (label_replace(label_replace((container_memory_working_set_bytes{image!=\"\"} and on(id) (time() - container_last_seen{image!=\"\"} < 60)), \"project\", \"$1\", \"name\", \"(.+)\"), \"project\", \"$1\", \"container_label_com_docker_compose_project\", \"(.+)\"))",
           "refId": "A",
           "instant": true,
           "range": false,
@@ -928,7 +928,7 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "sum by(name, project) (label_replace(label_replace(rate(container_cpu_usage_seconds_total{image!=\"\"}[5m]), \"project\", \"$1\", \"name\", \"(.+)\"), \"project\", \"$1\", \"container_label_com_docker_compose_project\", \"(.+)\"))",
+          "expr": "sum by(name, project) (label_replace(label_replace((rate(container_cpu_usage_seconds_total{image!=\"\"}[5m]) and on(id) (time() - container_last_seen{image!=\"\"} < 60)), \"project\", \"$1\", \"name\", \"(.+)\"), \"project\", \"$1\", \"container_label_com_docker_compose_project\", \"(.+)\"))",
           "refId": "B",
           "instant": true,
           "range": false,
